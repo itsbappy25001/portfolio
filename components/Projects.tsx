@@ -10,7 +10,7 @@ const projects = [
     title: 'Rainfall and Temperature Prediction',
     description: 'ML-based analysis for climate and agriculture forecasting. Developed machine learning models to predict rainfall patterns and temperature variations, supporting agricultural planning and climate analysis.',
     technologies: ['Machine Learning', 'Time Series', 'Climate Analysis', 'Python'],
-    github: 'https://github.com/SarbajitPbappy',
+    github: 'https://github.com/SarbajitPbappy/RainfallML',
     category: 'Machine Learning',
     gradient: 'from-blue-500 to-cyan-500',
   },
@@ -19,7 +19,7 @@ const projects = [
     title: 'Population Analysis with MySQL',
     description: 'Demographic and urbanization insights using advanced SQL queries. Analyzed large-scale population datasets to extract meaningful insights about demographic trends and urbanization patterns.',
     technologies: ['MySQL', 'SQL', 'Data Analysis', 'Database Design'],
-    github: 'https://github.com/SarbajitPbappy',
+    github: 'https://github.com/SarbajitPbappy/Project-ONE',
     category: 'Data Analysis',
     gradient: 'from-purple-500 to-pink-500',
   },
@@ -28,7 +28,7 @@ const projects = [
     title: 'Email Spam Classification',
     description: 'ML models for spam filtering using Random Forest and Decision Trees. Built and compared multiple machine learning algorithms to accurately classify emails as spam or legitimate messages.',
     technologies: ['Random Forest', 'Decision Trees', 'NLP', 'Classification'],
-    github: 'https://github.com/SarbajitPbappy',
+    github: 'https://github.com/SarbajitPbappy/Project-NOT',
     category: 'Machine Learning',
     gradient: 'from-green-500 to-emerald-500',
   },
@@ -37,19 +37,10 @@ const projects = [
     title: 'Medical Image Classification Projects',
     description: 'Deep learning models for disease detection from medical images. Includes projects on skin disease classification, medical image analysis, and explainable AI implementations.',
     technologies: ['Deep Learning', 'CNN', 'Medical Imaging', 'TensorFlow', 'Keras'],
-    github: 'https://github.com/SarbajitPbappy',
+    github: 'https://github.com/SarbajitPbappy/Lyme-Disease',
     category: 'Deep Learning',
     gradient: 'from-red-500 to-rose-500',
-  },
-  {
-    icon: Sparkles,
-    title: 'Agricultural Image Analysis',
-    description: 'Computer vision projects for agricultural applications including jackfruit disease classification, plant health monitoring, and crop analysis using deep learning techniques.',
-    technologies: ['Computer Vision', 'Deep Learning', 'Image Classification', 'OpenCV'],
-    github: 'https://github.com/SarbajitPbappy',
-    category: 'Computer Vision',
-    gradient: 'from-amber-500 to-orange-500',
-  },
+  }
 ]
 
 const containerVariants = {
