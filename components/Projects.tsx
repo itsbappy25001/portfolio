@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Github, Database, Mail, Cloud, Code, Sparkles } from 'lucide-react'
+import { Github, Database, Mail, Cloud, Code, Sparkles, Split } from 'lucide-react'
 import Link from 'next/link'
 
 const projects = [
@@ -40,7 +40,27 @@ const projects = [
     github: 'https://github.com/SarbajitPbappy/Lyme-Disease',
     category: 'Deep Learning',
     gradient: 'from-red-500 to-rose-500',
+  },
+  {
+    icon: Split,
+    title: 'Splitter – Expense Splitting & Personal Finance Tracker',
+    description: 'Academic project developed using Flutter (Cupertino) and Firebase for group expense splitting and personal finance tracking. Includes trip and bachelor mess management, optimized settlement algorithms, real-time synchronization, analytics dashboards, meal tracking, and automated PDF report generation.',
+    technologies: [
+      'Flutter',
+      'Dart',
+      'Firebase',
+      'Cloud Firestore',
+      'Firebase Auth',
+      'Cupertino UI',
+      'Provider',
+      'GoRouter',
+      'PDF Generation'
+    ],
+    github: 'https://github.com/SarbajitPbappy/MAD-Project', // replace with actual repo
+    category: 'Academic Project',
+    gradient: 'from-emerald-500 to-teal-500',
   }
+  
 ]
 
 const containerVariants = {
