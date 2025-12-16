@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import Link from 'next/link'
+import Swal from 'sweetalert2'
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -15,6 +16,14 @@ const contactSchema = z.object({
 })
 
 type ContactFormData = z.infer<typeof contactSchema>
+
+const contactInfo = [
+  { icon: Mail, text: 'bappy15-6155@s.diu.edu.bd', href: 'mailto:bappy15-6155@s.diu.edu.bd', gradient: 'from-blue-500 to-cyan-500' },
+  { icon: Mail, text: 'sarbajit2001@gmail.com', href: 'mailto:sarbajit2001@gmail.com', gradient: 'from-purple-500 to-pink-500' },
+  { icon: Phone, text: '+880 1315352270', href: 'tel:+8801315352270', gradient: 'from-green-500 to-emerald-500' },
+  { icon: Github, text: 'github.com/SarbajitPbappy', href: 'https://github.com/SarbajitPbappy', gradient: 'from-gray-700 to-gray-900', external: true },
+  { icon: Linkedin, text: 'linkedin.com/in/iamsarbajit', href: 'https://linkedin.com/in/iamsarbajit', gradient: 'from-blue-600 to-blue-800', external: true },
+]
 
 export default function Contact() {
   const {
@@ -37,79 +46,118 @@ export default function Contact() {
       const result = await response.json()
       
       if (response.ok && result.success) {
-        alert(result.message || 'Message sent successfully!')
+        Swal.fire({
+          icon: 'success',
+          title: 'Message Sent!',
+          text: result.message || 'I will get back to you soon.',
+          confirmButtonColor: '#0284c7',
+          confirmButtonText: 'Great!',
+          timer: 3000,
+          timerProgressBar: true,
+          customClass: {
+            popup: 'rounded-2xl',
+            confirmButton: 'rounded-lg px-6 py-2',
+          },
+        })
         reset()
       } else {
-        alert(result.message || 'Failed to send message. Please try again.')
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: result.message || 'Failed to send message. Please try again.',
+          confirmButtonColor: '#dc2626',
+          customClass: {
+            popup: 'rounded-2xl',
+            confirmButton: 'rounded-lg px-6 py-2',
+          },
+        })
       }
     } catch (error) {
-      alert('An error occurred. Please try again later.')
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An error occurred. Please try again later.',
+        confirmButtonColor: '#dc2626',
+        customClass: {
+          popup: 'rounded-2xl',
+          confirmButton: 'rounded-lg px-6 py-2',
+        },
+      })
     }
   }
 
   return (
-    <section className="section-container bg-white">
+    <section id="contact" className="section-container bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
+      {/* Decorative background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-primary-200/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary-300/10 rounded-full blur-3xl"></div>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-100px' }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="relative z-10"
       >
-        <h2 className="text-4xl font-bold text-center mb-4">
-          Get In <span className="gradient-text">Touch</span>
-        </h2>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          Let's collaborate on research or discuss opportunities
-        </p>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-5xl md:text-6xl font-bold mb-6">
+            Get In <span className="gradient-text">Touch</span>
+          </h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Let's collaborate on research or discuss opportunities
+          </p>
+        </motion.div>
 
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
           {/* Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-6"
           >
-            <div>
-              <h3 className="text-2xl font-semibold mb-6">Contact Information</h3>
+            <div className="card bg-white/80 backdrop-blur-sm border-primary-200/50">
+              <h3 className="text-2xl font-bold mb-6 text-gray-900">Contact Information</h3>
               <div className="space-y-4">
-                <a
-                  href="mailto:bappy15-6155@s.diu.edu.bd"
-                  className="flex items-center gap-3 text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  <Mail className="w-5 h-5" />
-                  <span>bappy15-6155@s.diu.edu.bd</span>
-                </a>
-                <a
-                  href="mailto:sarbajit2001@gmail.com"
-                  className="flex items-center gap-3 text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  <Mail className="w-5 h-5" />
-                  <span>sarbajit2001@gmail.com</span>
-                </a>
-                <a
-                  href="tel:+8801315352270"
-                  className="flex items-center gap-3 text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  <Phone className="w-5 h-5" />
-                  <span>+880 1315352270</span>
-                </a>
-                <Link
-                  href="https://github.com/SarbajitPbappy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  <Github className="w-5 h-5" />
-                  <span>github.com/SarbajitPbappy</span>
-                </Link>
-                <Link
-                  href="https://linkedin.com/in/iamsarbajit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-gray-700 hover:text-primary-600 transition-colors"
-                >
-                  <Linkedin className="w-5 h-5" />
-                  <span>linkedin.com/in/iamsarbajit</span>
-                </Link>
+                {contactInfo.map((info, index) => (
+                  <motion.div
+                    key={index}
+                    whileHover={{ x: 5, scale: 1.02 }}
+                    transition={{ type: 'spring', stiffness: 300 }}
+                  >
+                    {info.external ? (
+                      <Link
+                        href={info.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
+                      >
+                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                          <info.icon className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">{info.text}</span>
+                      </Link>
+                    ) : (
+                      <motion.a
+                        href={info.href}
+                        className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
+                      >
+                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                          <info.icon className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">{info.text}</span>
+                      </motion.a>
+                    )}
+                  </motion.div>
+                ))}
               </div>
             </div>
           </motion.div>
@@ -117,78 +165,112 @@ export default function Contact() {
           {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Name
-                </label>
-                <input
-                  {...register('name')}
-                  type="text"
-                  id="name"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-                )}
-              </div>
+            <div className="card bg-white/80 backdrop-blur-sm border-primary-200/50">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Name
+                  </label>
+                  <input
+                    {...register('name')}
+                    type="text"
+                    id="name"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+                    placeholder="Your name"
+                  />
+                  {errors.name && (
+                    <motion.p 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm mt-1"
+                    >
+                      {errors.name.message}
+                    </motion.p>
+                  )}
+                </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                <input
-                  {...register('email')}
-                  type="email"
-                  id="email"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-                )}
-              </div>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    {...register('email')}
+                    type="email"
+                    id="email"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+                    placeholder="your.email@example.com"
+                  />
+                  {errors.email && (
+                    <motion.p 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm mt-1"
+                    >
+                      {errors.email.message}
+                    </motion.p>
+                  )}
+                </div>
 
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
-                  Subject
-                </label>
-                <input
-                  {...register('subject')}
-                  type="text"
-                  id="subject"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-                {errors.subject && (
-                  <p className="text-red-500 text-sm mt-1">{errors.subject.message}</p>
-                )}
-              </div>
+                <div>
+                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Subject
+                  </label>
+                  <input
+                    {...register('subject')}
+                    type="text"
+                    id="subject"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+                    placeholder="What's this about?"
+                  />
+                  {errors.subject && (
+                    <motion.p 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm mt-1"
+                    >
+                      {errors.subject.message}
+                    </motion.p>
+                  )}
+                </div>
 
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                  Message
-                </label>
-                <textarea
-                  {...register('message')}
-                  id="message"
-                  rows={5}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                />
-                {errors.message && (
-                  <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>
-                )}
-              </div>
+                <div>
+                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Message
+                  </label>
+                  <textarea
+                    {...register('message')}
+                    id="message"
+                    rows={5}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none transition-all bg-white"
+                    placeholder="Tell me about your project or inquiry..."
+                  />
+                  {errors.message && (
+                    <motion.p 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm mt-1"
+                    >
+                      {errors.message.message}
+                    </motion.p>
+                  )}
+                </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Send className="w-5 h-5" />
-                {isSubmitting ? 'Sending...' : 'Send Message'}
-              </button>
-            </form>
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-gradient-to-r from-primary-600 to-primary-500 text-white px-6 py-4 rounded-xl hover:from-primary-700 hover:to-primary-600 transition-all font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                >
+                  <Send className="w-5 h-5" />
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                </motion.button>
+              </form>
+            </div>
           </motion.div>
         </div>
       </motion.div>

@@ -12,6 +12,7 @@ const education = [
     location: 'Västerås, Sweden',
     period: 'Jan 2025 – Jun 2025',
     highlights: ['International academic exchange', 'Cross-cultural research collaboration', 'Global perspective on AI/ML'],
+    gradient: 'from-blue-500 to-indigo-500',
   },
   {
     icon: GraduationCap,
@@ -21,6 +22,7 @@ const education = [
     gpa: 'CGPA: 3.93/4.00',
     period: 'May 2022 – Present',
     highlights: ['Outstanding academic performance', 'Research-focused curriculum', 'Active in IEEE activities'],
+    gradient: 'from-purple-500 to-pink-500',
   },
   {
     icon: Award,
@@ -30,80 +32,184 @@ const education = [
     gpa: 'GPA: 5.00/5.00',
     period: 'Jul 2017 – Dec 2019',
     highlights: ['Perfect GPA', 'Strong foundation in science and mathematics'],
+    gradient: 'from-green-500 to-emerald-500',
   },
 ]
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+}
+
 export default function Education() {
   return (
-    <section className="section-container bg-gray-50">
+    <section id="education" className="section-container bg-gradient-to-b from-gray-50 via-white to-gray-50 relative overflow-hidden">
+      {/* Decorative background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-40 left-20 w-72 h-72 bg-primary-200/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 right-20 w-72 h-72 bg-primary-300/10 rounded-full blur-3xl"></div>
+      </div>
+
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-100px' }}
+        variants={containerVariants}
+        className="relative z-10"
       >
-        <h2 className="text-4xl font-bold text-center mb-4">
-          <span className="gradient-text">Education</span>
-        </h2>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          Academic journey and international experiences
-        </p>
+        <motion.div variants={itemVariants} className="text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-5xl md:text-6xl font-bold mb-6"
+          >
+            <span className="gradient-text">Education</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-gray-600 max-w-2xl mx-auto"
+          >
+            Academic journey and international experiences
+          </motion.p>
+        </motion.div>
 
         <div className="max-w-4xl mx-auto space-y-8">
           {education.map((edu, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.2 }}
-              className="card"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02, x: 10, transition: { type: 'spring', stiffness: 300 } }}
+              className="group relative"
             >
-              <div className="flex items-start gap-6">
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    <edu.icon className="w-8 h-8 text-primary-600" />
+              {/* Gradient glow */}
+              <div className={`absolute inset-0 bg-gradient-to-r ${edu.gradient} rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500`}></div>
+
+              <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-100/50 transition-all duration-300 group-hover:shadow-2xl group-hover:border-primary-200/50">
+                <div className="flex items-start gap-6">
+                  <motion.div
+                    className="flex-shrink-0"
+                    whileHover={{ rotate: 360, scale: 1.15 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${edu.gradient} flex items-center justify-center shadow-lg`}>
+                      <edu.icon className="w-10 h-10 text-white" />
+                    </div>
+                  </motion.div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold mb-2 text-gray-900">
+                      {edu.degree || edu.program}
+                    </h3>
+                    <p className="text-primary-600 font-semibold mb-1">{edu.institution}</p>
+                    <p className="text-gray-500 text-sm mb-2">{edu.location}</p>
+                    {edu.gpa && (
+                      <motion.p
+                        initial={{ scale: 0.9 }}
+                        whileInView={{ scale: 1 }}
+                        viewport={{ once: true }}
+                        className="text-gray-700 font-bold mb-2 text-lg"
+                      >
+                        {edu.gpa}
+                      </motion.p>
+                    )}
+                    <p className="text-gray-500 mb-4">{edu.period}</p>
+                    <ul className="space-y-2">
+                      {edu.highlights.map((highlight, i) => (
+                        <motion.li
+                          key={i}
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: i * 0.1 }}
+                          className="text-gray-600 flex items-start"
+                        >
+                          <span className={`text-transparent bg-clip-text bg-gradient-to-r ${edu.gradient} mr-2 font-bold`}>•</span>
+                          {highlight}
+                        </motion.li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-semibold mb-2">
-                    {edu.degree || edu.program}
-                  </h3>
-                  <p className="text-primary-600 font-medium mb-1">{edu.institution}</p>
-                  <p className="text-gray-500 text-sm mb-2">{edu.location}</p>
-                  {edu.gpa && (
-                    <p className="text-gray-700 font-semibold mb-2">{edu.gpa}</p>
-                  )}
-                  <p className="text-gray-500 mb-4">{edu.period}</p>
-                  <ul className="space-y-1">
-                    {edu.highlights.map((highlight, i) => (
-                      <li key={i} className="text-gray-600 flex items-start">
-                        <span className="text-primary-600 mr-2">•</span>
-                        {highlight}
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
+        {/* Courses & Certifications Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-12 max-w-4xl mx-auto card bg-gradient-to-br from-primary-50 to-white"
+          variants={itemVariants}
+          className="mt-16 max-w-4xl mx-auto"
         >
-          <h3 className="text-2xl font-semibold mb-4">Courses & Certifications</h3>
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-semibold text-primary-600 mb-1">Supervised Machine Learning: Regression and Classification</h4>
-              <p className="text-gray-600">Instructor: Andrew Ng – Coursera, DeepLearning.AI (2023–2024)</p>
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            className="card bg-gradient-to-br from-primary-50 via-white to-primary-50/50 border-primary-200/50 rounded-2xl p-6"
+          >
+            <h3 className="text-2xl font-bold mb-6 text-gray-900">Courses & Certifications</h3>
+            <div className="space-y-4">
+              {[
+                {
+                  title: 'Supervised Machine Learning: Regression and Classification',
+                  desc: 'Instructor: Andrew Ng – Coursera, DeepLearning.AI (2023–2024)',
+                  verifyLink: 'https://coursera.org/verify/RYF6AW9BPQLN',
+                },
+                {
+                  title: 'CSE Fundamental',
+                  desc: 'Phitron.io (2022–2024). Includes DSA, OOP, DBMS, AWS, and ML foundations.',
+                  verifyLink: 'https://drive.google.com/file/d/1--Le7QE_IFJHKSGOUSexY25u8GXcPMDt/view?usp=sharing',
+                },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  whileHover={{ x: 5 }}
+                  className="relative"
+                >
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/50 border border-gray-100 hover:border-primary-200 transition-all">
+                    <div>
+                      <h4 className="font-bold text-primary-600 mb-1">{item.title}</h4>
+                      <p className="text-gray-600 text-sm">{item.desc}</p>
+                    </div>
+
+                    {item.verifyLink && (
+                      <motion.a
+                        href={item.verifyLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ scale: 1.1, rotate: 3 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex-shrink-0 px-4 py-1 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all"
+                      >
+                        Verify Certificate
+                      </motion.a>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
             </div>
-            <div>
-              <h4 className="font-semibold text-primary-600 mb-1">CSE Fundamental</h4>
-              <p className="text-gray-600">Phitron.io (2022–2024). Includes DSA, OOP, DBMS, AWS, and ML foundations.</p>
-            </div>
-          </div>
+          </motion.div>
         </motion.div>
       </motion.div>
     </section>
