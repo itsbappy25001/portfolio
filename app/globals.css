@@ -14,6 +14,34 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-image:
+      radial-gradient(1200px circle at 20% 20%, rgba(14, 165, 233, 0.14), transparent 40%),
+      radial-gradient(1100px circle at 80% 10%, rgba(96, 165, 250, 0.12), transparent 40%),
+      radial-gradient(1000px circle at 60% 80%, rgba(20, 184, 166, 0.12), transparent 42%),
+      linear-gradient(180deg, #f8fbff 0%, #f5f7fb 30%, #f8fbff 100%);
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.12) 0, transparent 18%),
+      radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.1) 0, transparent 18%),
+      radial-gradient(circle at 40% 70%, rgba(16, 185, 129, 0.08) 0, transparent 20%),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.45) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.45) 1px, transparent 1px);
+    background-size:
+      600px 600px,
+      480px 480px,
+      520px 520px,
+      120px 120px,
+      120px 120px;
+    mix-blend-mode: soft-light;
+    opacity: 0.6;
+    z-index: 0;
   }
   
   /* Custom scrollbar */
@@ -43,7 +71,7 @@
 
 @layer components {
   .section-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12;
   }
   
   .gradient-text {
@@ -69,6 +97,33 @@
   .card:hover {
     @apply shadow-2xl border-primary-200/50;
     transform: translateY(-2px);
+  }
+
+  .frosted-card {
+    position: relative;
+    overflow: hidden;
+    @apply bg-white/75 backdrop-blur-lg border border-white/60 shadow-xl rounded-2xl;
+  }
+
+  .frosted-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(56, 189, 248, 0));
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .frosted-card:hover::before {
+    opacity: 1;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200;
+  }
+
+  .soft-divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent;
   }
 
   /* Glassmorphism effect */

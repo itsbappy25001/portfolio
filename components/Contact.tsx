@@ -25,6 +25,13 @@ const contactInfo = [
   { icon: Linkedin, text: 'linkedin.com/in/iamsarbajit', href: 'https://linkedin.com/in/iamsarbajit', gradient: 'from-blue-600 to-blue-800', external: true },
 ]
 
+const fadeIn = {
+  initial: { opacity: 0, y: 14 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-60px' },
+  transition: { duration: 0.35, ease: 'easeOut' },
+}
+
 export default function Contact() {
   const {
     register,
@@ -94,19 +101,8 @@ export default function Contact() {
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary-300/10 rounded-full blur-3xl"></div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="relative z-10"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+      <motion.div className="relative z-10">
+        <motion.div {...fadeIn} className="text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
             Get In <span className="gradient-text">Touch</span>
           </h2>
@@ -118,10 +114,7 @@ export default function Contact() {
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
           {/* Contact Info */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            {...fadeIn}
             className="space-y-6"
           >
             <div className="card bg-white/80 backdrop-blur-sm border-primary-200/50">
@@ -130,8 +123,8 @@ export default function Contact() {
                 {contactInfo.map((info, index) => (
                   <motion.div
                     key={index}
-                    whileHover={{ x: 5, scale: 1.02 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
+                    whileHover={{ x: 4, scale: 1.01 }}
+                    transition={{ duration: 0.2 }}
                   >
                     {info.external ? (
                       <Link
@@ -164,10 +157,7 @@ export default function Contact() {
 
           {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            {...fadeIn}
           >
             <div className="card bg-white/80 backdrop-blur-sm border-primary-200/50">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -184,7 +174,7 @@ export default function Contact() {
                   />
                   {errors.name && (
                     <motion.p 
-                      initial={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="text-red-500 text-sm mt-1"
                     >
@@ -206,7 +196,7 @@ export default function Contact() {
                   />
                   {errors.email && (
                     <motion.p 
-                      initial={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="text-red-500 text-sm mt-1"
                     >
@@ -228,7 +218,7 @@ export default function Contact() {
                   />
                   {errors.subject && (
                     <motion.p 
-                      initial={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="text-red-500 text-sm mt-1"
                     >
@@ -250,7 +240,7 @@ export default function Contact() {
                   />
                   {errors.message && (
                     <motion.p 
-                      initial={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="text-red-500 text-sm mt-1"
                     >

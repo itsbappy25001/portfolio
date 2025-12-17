@@ -63,171 +63,90 @@ const projects = [
   
 ]
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 50, scale: 0.9 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
+const fadeIn = {
+  initial: { opacity: 0, y: 12 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-60px' },
+  transition: { duration: 0.35, ease: 'easeOut' },
 }
 
 export default function Projects() {
   return (
-    <section id="projects" className="section-container bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
-      {/* Decorative background elements */}
+    <section id="projects" className="section-container bg-white relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-primary-200/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary-300/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 left-0 w-80 h-80 bg-primary-200/12 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary-300/12 rounded-full blur-3xl" />
       </div>
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-100px' }}
-        variants={containerVariants}
-        className="relative z-10"
-      >
-        <motion.div variants={itemVariants} className="text-center mb-16">
-          <motion.h2
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-5xl md:text-6xl font-bold mb-6"
-          >
+      <div className="relative z-10">
+        <motion.div {...fadeIn} className="text-center mb-12">
+          <h2 className="text-5xl md:text-6xl font-bold mb-4">
             <span className="gradient-text">Projects</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-gray-600 max-w-2xl mx-auto"
-          >
+          </h2>
+          <p className="text-lg text-gray-600">
             Showcasing my work in machine learning, deep learning, and data analysis
-          </motion.p>
+          </p>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {projects.map((project, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project, idx) => (
             <motion.div
               key={project.title}
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.03, 
-                y: -8,
-                transition: { type: 'spring', stiffness: 300, damping: 20 }
-              }}
-              className="group relative"
+              {...fadeIn}
+              transition={{ ...fadeIn.transition, delay: idx * 0.05 }}
+              className="group relative bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
             >
-              {/* Gradient border effect */}
-              <div className={`absolute inset-0 bg-gradient-to-r ${project.gradient} rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500`}></div>
-              
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-100/50 h-full flex flex-col transition-all duration-300 group-hover:shadow-2xl group-hover:border-primary-200/50">
-                {/* Icon with gradient background */}
-                <motion.div
-                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center mb-5 shadow-lg`}
-                  whileHover={{ rotate: [0, -10, 10, -10, 0], scale: 1.1 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <project.icon className="w-8 h-8 text-white" />
-                </motion.div>
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center mb-4 text-white shadow-lg`}>
+                <project.icon className="w-7 h-7" />
+              </div>
 
-                <div className="flex-1">
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <h3 className="text-xl font-bold text-gray-900 leading-tight flex-1">{project.title}</h3>
-                    <motion.span
-                      initial={{ scale: 0, rotate: -180 }}
-                      whileInView={{ scale: 1, rotate: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.1, type: 'spring' }}
-                      className={`px-3 py-1 bg-gradient-to-r ${project.gradient} text-white rounded-full text-xs font-semibold shadow-md whitespace-nowrap`}
-                    >
-                      {project.category}
-                    </motion.span>
-                  </div>
-                  
-                  <p className="text-gray-600 mb-5 leading-relaxed text-sm">{project.description}</p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-5">
-                    {project.technologies.map((tech, i) => (
-                      <motion.span
-                        key={tech}
-                        initial={{ opacity: 0, scale: 0 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: (index * 0.1) + (i * 0.05), type: 'spring' }}
-                        whileHover={{ scale: 1.1, y: -2 }}
-                        className="px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg text-xs font-medium border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all cursor-default"
-                      >
-                        {tech}
-                      </motion.span>
-                    ))}
-                  </div>
-                </div>
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <h3 className="text-xl font-bold text-gray-900 leading-tight flex-1">{project.title}</h3>
+                <span className={`px-3 py-1 bg-gradient-to-r ${project.gradient} text-white rounded-full text-xs font-semibold whitespace-nowrap`}>
+                  {project.category}
+                </span>
+              </div>
 
-                <motion.div
-                  whileHover={{ x: 5 }}
-                  className="flex gap-2 mt-auto pt-4 border-t border-gray-100"
-                >
-                  <Link
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold text-sm group/link"
+              <p className="text-gray-600 mb-4 leading-relaxed text-sm">{project.description}</p>
+
+              <div className="flex flex-wrap gap-2 mb-4">
+                {project.technologies.map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg text-xs font-medium border border-gray-200"
                   >
-                    <motion.div
-                      whileHover={{ rotate: 360 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <Github className="w-5 h-5" />
-                    </motion.div>
-                    <span className="group-hover/link:underline">View on GitHub</span>
-                  </Link>
-                </motion.div>
+                    {tech}
+                  </span>
+                ))}
+              </div>
+
+              <div className="flex gap-2 mt-auto pt-4 border-t border-gray-100">
+                <Link
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold text-sm"
+                >
+                  <Github className="w-5 h-5" />
+                  <span>View on GitHub</span>
+                </Link>
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
-        <motion.div
-          variants={itemVariants}
-          className="mt-16 text-center"
-        >
-          <motion.div 
-            whileHover={{ scale: 1.05 }} 
-            whileTap={{ scale: 0.95 }}
-            className="inline-block"
+        <motion.div {...fadeIn} className="mt-12 text-center">
+          <Link
+            href="https://github.com/SarbajitPbappy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white px-8 py-4 rounded-xl hover:from-primary-700 hover:to-primary-600 transition-all font-semibold shadow-lg"
           >
-            <Link
-              href="https://github.com/SarbajitPbappy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white px-8 py-4 rounded-xl hover:from-primary-700 hover:to-primary-600 transition-all font-semibold shadow-xl hover:shadow-2xl"
-            >
-              <Github className="w-5 h-5" />
-              <span>View All Projects on GitHub</span>
-            </Link>
-          </motion.div>
+            <Github className="w-5 h-5" />
+            <span>View All Projects on GitHub</span>
+          </Link>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   )
 }

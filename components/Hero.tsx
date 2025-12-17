@@ -1,13 +1,24 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Download, Github, Linkedin, Mail, Phone, ArrowDown } from 'lucide-react'
+import { Download, Github, Linkedin, Mail, Phone, ArrowDown, Sparkles, GraduationCap } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
+const fadeIn = {
+  initial: { opacity: 0, y: 16 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-80px' },
+  transition: { duration: 0.45, ease: 'easeOut' },
+}
+
+
+
+const focusTags = ['Computer Vision', 'Explainable AI', 'Medical Imaging', 'Agritech']
+
 export default function Hero() {
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-50 pt-16 relative overflow-hidden">
+    <section id="home" className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-50 pt-16 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -39,42 +50,37 @@ export default function Hero() {
       </div>
 
       <div className="section-container relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
           {/* Left Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="space-y-6"
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                Hi, I'm{' '}
-                <span className="gradient-text">Sarbajit Paul Bappy</span>
-              </h1>
-            </motion.div>
+          <motion.div {...fadeIn} className="space-y-6">
+
+            <div className="space-y-2">
+              <motion.div {...fadeIn}>
+                <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+                  Hi, I'm{' '}
+                  <span className="gradient-text">Sarbajit Paul Bappy</span>
+                </h1>
+              </motion.div>
+            </div>
             
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
-              <h2 className="text-2xl md:text-3xl text-gray-700 mb-4">
-                Final-Year Computer Science Student
-              </h2>
-              <p className="text-lg text-gray-600 mb-6">
+            <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.1 }}>
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-white/70 border border-primary-100 shadow-sm">
+                <GraduationCap className="w-5 h-5 text-primary-600" />
+                <div className="text-sm text-gray-700">
+                  Final-year CSE Student & Teaching Assistant @ DIU
+                </div>
+              </div>
+
+              <p className="text-lg text-gray-600 mb-4">
                 Passionate about <span className="font-semibold text-primary-600">Deep Learning</span>,{' '}
                 <span className="font-semibold text-primary-600">Computer Vision</span>, and{' '}
-                <span className="font-semibold text-primary-600">Explainable AI</span> with applications in healthcare and agriculture
+                <span className="font-semibold text-primary-600">Explainable AI</span> for healthcare and agriculture.
               </p>
+
               <div className="space-y-2 text-gray-600 mb-6">
                 <motion.div 
                   className="flex items-center gap-2"
-                  whileHover={{ x: 5 }}
+                  whileHover={{ x: 7 }}
                 >
                   <Mail className="w-4 h-4" />
                   <a href="mailto:bappy15-6155@s.diu.edu.bd" className="hover:text-primary-600">bappy15-6155@s.diu.edu.bd</a>
@@ -89,12 +95,19 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="flex flex-wrap gap-4"
-            >
+            <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.25 }} className="flex flex-wrap gap-2">
+              {focusTags.map((tag) => (
+                <span key={tag} className="pill bg-white/70 text-gray-700 border-gray-200 shadow-sm">
+                  {tag}
+                </span>
+              ))}
+            </motion.div>
+
+            <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.3 }} className="grid sm:grid-cols-3 gap-4">
+            
+            </motion.div>
+
+            <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.2 }} className="flex flex-wrap gap-4">
               <motion.a
                 href="/Bappy_CV_Official.pdf"
                 download
@@ -131,12 +144,7 @@ export default function Hero() {
           </motion.div>
 
           {/* Right Image */}
-          <motion.div
-            initial={{ opacity: 0, x: 50, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-            className="flex justify-center"
-          >
+          <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.25 }} className="flex justify-center">
             <div className="relative w-80 h-80 md:w-96 md:h-96">
               <motion.div
                 className="absolute inset-0 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full blur-3xl opacity-30"

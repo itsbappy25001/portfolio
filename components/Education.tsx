@@ -5,16 +5,6 @@ import { GraduationCap, Globe, Award } from 'lucide-react'
 
 const education = [
   {
-    icon: Globe,
-    program: 'Erasmus+ Exchange Semester',
-    degree: 'Computer Science and Engineering',
-    institution: 'Mälardalen University',
-    location: 'Västerås, Sweden',
-    period: 'Jan 2025 – Jun 2025',
-    highlights: ['International academic exchange', 'Cross-cultural research collaboration', 'Global perspective on AI/ML'],
-    gradient: 'from-blue-500 to-indigo-500',
-  },
-  {
     icon: GraduationCap,
     degree: 'Bachelor of Science in Computer Science and Engineering',
     institution: 'Daffodil International University (DIU)',
@@ -23,6 +13,16 @@ const education = [
     period: 'May 2022 – Present',
     highlights: ['Outstanding academic performance', 'Research-focused curriculum', 'Active in IEEE activities'],
     gradient: 'from-purple-500 to-pink-500',
+  },
+  {
+    icon: Globe,
+    program: 'Erasmus+ Exchange Semester',
+    degree: 'Computer Science and Engineering',
+    institution: 'Mälardalen University',
+    location: 'Västerås, Sweden',
+    period: 'Jan 2025 – Jun 2025',
+    highlights: ['International academic exchange', 'Cross-cultural research collaboration', 'Global perspective on AI/ML'],
+    gradient: 'from-blue-500 to-indigo-500',
   },
   {
     icon: Award,
@@ -36,26 +36,11 @@ const education = [
   },
 ]
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, x: -50 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
+const fadeIn = {
+  initial: { opacity: 0, y: 14 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-60px' },
+  transition: { duration: 0.35, ease: 'easeOut' },
 }
 
 export default function Education() {
@@ -67,40 +52,22 @@ export default function Education() {
         <div className="absolute bottom-40 right-20 w-72 h-72 bg-primary-300/10 rounded-full blur-3xl"></div>
       </div>
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-100px' }}
-        variants={containerVariants}
-        className="relative z-10"
-      >
-        <motion.div variants={itemVariants} className="text-center mb-16">
-          <motion.h2
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-5xl md:text-6xl font-bold mb-6"
-          >
+      <motion.div className="relative z-10">
+        <motion.div {...fadeIn} className="text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-bold mb-6">
             <span className="gradient-text">Education</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-gray-600 max-w-2xl mx-auto"
-          >
+          </h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Academic journey and international experiences
-          </motion.p>
+          </p>
         </motion.div>
 
         <div className="max-w-4xl mx-auto space-y-8">
           {education.map((edu, index) => (
             <motion.div
               key={index}
-              variants={itemVariants}
-              whileHover={{ scale: 1.02, x: 10, transition: { type: 'spring', stiffness: 300 } }}
-              className="group relative"
+              {...fadeIn}
+              className="group relative hover:-translate-y-1 transition-transform duration-300"
             >
               {/* Gradient glow */}
               <div className={`absolute inset-0 bg-gradient-to-r ${edu.gradient} rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500`}></div>
@@ -156,14 +123,8 @@ export default function Education() {
         </div>
 
         {/* Courses & Certifications Section */}
-        <motion.div
-          variants={itemVariants}
-          className="mt-16 max-w-4xl mx-auto"
-        >
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            className="card bg-gradient-to-br from-primary-50 via-white to-primary-50/50 border-primary-200/50 rounded-2xl p-6"
-          >
+        <motion.div {...fadeIn} className="mt-16 max-w-4xl mx-auto">
+          <motion.div whileHover={{ scale: 1.01 }} className="card bg-gradient-to-br from-primary-50 via-white to-primary-50/50 border-primary-200/50 rounded-2xl p-6">
             <h3 className="text-2xl font-bold mb-6 text-gray-900">Courses & Certifications</h3>
             <div className="space-y-4">
               {[

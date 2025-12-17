@@ -9,8 +9,8 @@ const navItems = [
   { name: 'Home', href: '#home' },
   { name: 'About', href: '#about' },
   { name: 'Education', href: '#education' },
+  { name: 'Work Experience', href: '#experience' },
   { name: 'Research', href: '#research' },
-  { name: 'Publications', href: '#publications' },
   { name: 'Projects', href: '#projects' },
   { name: 'Contact', href: '#contact' },
 ]
@@ -76,7 +76,7 @@ export default function Navbar() {
           <Link 
             href="#home" 
             onClick={(e) => handleLinkClick(e, '#home')}
-            className="text-2xl font-bold gradient-text"
+            className="flex items-center h-full text-2xl font-bold gradient-text leading-none"
           >
             Sarbajit Paul Bappy
           </Link>
