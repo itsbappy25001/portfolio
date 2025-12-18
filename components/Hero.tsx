@@ -1,9 +1,11 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Download, Github, Linkedin, Mail, Phone, ArrowDown, Sparkles, GraduationCap } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import type { Hero } from '@/lib/types'
 
 const fadeIn = {
   initial: { opacity: 0, y: 16 },
@@ -12,11 +14,62 @@ const fadeIn = {
   transition: { duration: 0.45, ease: 'easeOut' },
 }
 
-
-
-const focusTags = ['Computer Vision', 'Explainable AI', 'Medical Imaging', 'Agritech']
+// Fallback data
+const fallbackHero: Hero = {
+  name: 'Sarbajit Paul Bappy',
+  title: 'Final-year CSE Student & Teaching Assistant @ DIU',
+  subtitle: '',
+  description: 'Passionate about Deep Learning, Computer Vision, and Explainable AI for healthcare and agriculture.',
+  email: 'bappy15-6155@s.diu.edu.bd',
+  phone: '+880 1315352270',
+  cv_url: '/Bappy_CV_Official.pdf',
+  github_url: 'https://github.com/SarbajitPbappy',
+  linkedin_url: 'https://linkedin.com/in/iamsarbajit',
+  profile_image_url: '/profile.jpg',
+  focus_tags: ['Computer Vision', 'Explainable AI', 'Medical Imaging', 'Agritech'],
+  order: 0,
+}
 
 export default function Hero() {
+  const [hero, setHero] = useState<Hero | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchHero()
+    
+    // Listen for content updates from admin panel
+    const handleUpdate = () => {
+      fetchHero()
+    }
+    window.addEventListener('content-updated', handleUpdate)
+    
+    return () => {
+      window.removeEventListener('content-updated', handleUpdate)
+    }
+  }, [])
+
+  const fetchHero = async () => {
+    try {
+      const res = await fetch('/api/hero')
+      const data = await res.json()
+      setHero(data || fallbackHero)
+    } catch (error) {
+      console.error('Error fetching hero:', error)
+      setHero(fallbackHero)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <section id="home" className="min-h-[80vh] flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </section>
+    )
+  }
+
+  const heroData = hero || fallbackHero
   return (
     <section id="home" className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-50 pt-16 relative overflow-hidden">
       {/* Animated background elements */}
@@ -58,88 +111,102 @@ export default function Hero() {
               <motion.div {...fadeIn}>
                 <h1 className="text-5xl md:text-6xl font-bold leading-tight">
                   Hi, I'm{' '}
-                  <span className="gradient-text">Sarbajit Paul Bappy</span>
+                  <span className="gradient-text">{heroData.name}</span>
                 </h1>
               </motion.div>
             </div>
             
             <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.1 }}>
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-white/70 border border-primary-100 shadow-sm">
-                <GraduationCap className="w-5 h-5 text-primary-600" />
-                <div className="text-sm text-gray-700">
-                  Final-year CSE Student & Teaching Assistant @ DIU
+              {heroData.title && (
+                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-white/70 border border-primary-100 shadow-sm mb-4">
+                  <GraduationCap className="w-5 h-5 text-primary-600" />
+                  <div className="text-sm text-gray-700">
+                    {heroData.title}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <p className="text-lg text-gray-600 mb-4">
-                Passionate about <span className="font-semibold text-primary-600">Deep Learning</span>,{' '}
-                <span className="font-semibold text-primary-600">Computer Vision</span>, and{' '}
-                <span className="font-semibold text-primary-600">Explainable AI</span> for healthcare and agriculture.
-              </p>
+              {heroData.description && (
+                <p className="text-lg text-gray-600 mb-4">
+                  {heroData.description}
+                </p>
+              )}
 
               <div className="space-y-2 text-gray-600 mb-6">
-                <motion.div 
-                  className="flex items-center gap-2"
-                  whileHover={{ x: 7 }}
-                >
-                  <Mail className="w-4 h-4" />
-                  <a href="mailto:bappy15-6155@s.diu.edu.bd" className="hover:text-primary-600">bappy15-6155@s.diu.edu.bd</a>
-                </motion.div>
-                <motion.div 
-                  className="flex items-center gap-2"
-                  whileHover={{ x: 5 }}
-                >
-                  <Phone className="w-4 h-4" />
-                  <span>+880 1315352270</span>
-                </motion.div>
+                {heroData.email && (
+                  <motion.div 
+                    className="flex items-center gap-2"
+                    whileHover={{ x: 7 }}
+                  >
+                    <Mail className="w-4 h-4" />
+                    <a href={`mailto:${heroData.email}`} className="hover:text-primary-600">{heroData.email}</a>
+                  </motion.div>
+                )}
+                {heroData.phone && (
+                  <motion.div 
+                    className="flex items-center gap-2"
+                    whileHover={{ x: 5 }}
+                  >
+                    <Phone className="w-4 h-4" />
+                    <span>{heroData.phone}</span>
+                  </motion.div>
+                )}
               </div>
             </motion.div>
 
-            <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.25 }} className="flex flex-wrap gap-2">
-              {focusTags.map((tag) => (
-                <span key={tag} className="pill bg-white/70 text-gray-700 border-gray-200 shadow-sm">
-                  {tag}
-                </span>
-              ))}
-            </motion.div>
+            {heroData.focus_tags && heroData.focus_tags.length > 0 && (
+              <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.25 }} className="flex flex-wrap gap-2">
+                {heroData.focus_tags.map((tag) => (
+                  <span key={tag} className="pill bg-white/70 text-gray-700 border-gray-200 shadow-sm">
+                    {tag}
+                  </span>
+                ))}
+              </motion.div>
+            )}
 
             <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.3 }} className="grid sm:grid-cols-3 gap-4">
             
             </motion.div>
 
             <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.2 }} className="flex flex-wrap gap-4">
-              <motion.a
-                href="/Bappy_CV_Official.pdf"
-                download
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-lg"
-              >
-                <Download size={20} />
-                Download CV
-              </motion.a>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  href="https://github.com/SarbajitPbappy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:border-primary-600 hover:text-primary-600 transition-colors shadow-lg"
+              {heroData.cv_url && (
+                <motion.a
+                  href={heroData.cv_url}
+                  download
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-lg"
                 >
-                  <Github size={20} />
-                  GitHub
-                </Link>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  href="https://linkedin.com/in/iamsarbajit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:border-primary-600 hover:text-primary-600 transition-colors shadow-lg"
-                >
-                  <Linkedin size={20} />
-                  LinkedIn
-                </Link>
-              </motion.div>
+                  <Download size={20} />
+                  Download CV
+                </motion.a>
+              )}
+              {heroData.github_url && (
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link
+                    href={heroData.github_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:border-primary-600 hover:text-primary-600 transition-colors shadow-lg"
+                  >
+                    <Github size={20} />
+                    GitHub
+                  </Link>
+                </motion.div>
+              )}
+              {heroData.linkedin_url && (
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link
+                    href={heroData.linkedin_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:border-primary-600 hover:text-primary-600 transition-colors shadow-lg"
+                  >
+                    <Linkedin size={20} />
+                    LinkedIn
+                  </Link>
+                </motion.div>
+              )}
             </motion.div>
           </motion.div>
 
@@ -164,8 +231,8 @@ export default function Hero() {
                 transition={{ type: 'spring', stiffness: 300 }}
               >
                 <Image
-                  src="/profile.jpg"
-                  alt="Sarbajit Paul Bappy"
+                  src={heroData.profile_image_url || '/profile.jpg'}
+                  alt={heroData.name}
                   fill
                   className="object-cover"
                   priority

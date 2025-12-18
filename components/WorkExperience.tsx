@@ -1,47 +1,9 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Award, Users, BookOpen, Briefcase } from 'lucide-react'
-
-const roles = [
-  {
-    icon: BookOpen,
-    title: 'Teaching Assistant',
-    organization: 'Daffodil International University',
-    period: 'October 2025 – Present',
-    description:
-      'Supporting undergraduate courses, labs, and evaluation under Prof. Dr. Fernaz Narin Nur. Mentoring students and assisting research activities.',
-    gradient: 'from-blue-500 to-cyan-500',
-    type: 'Work',
-  },
-  {
-    icon: Users,
-    title: 'IEEE Vice Chair (Technical)',
-    organization: 'IEEE DIU SB CS Chapter',
-    period: '2024 – 2025',
-    description: 'Led technical initiatives and events for the IEEE Student Branch Computer Science Chapter.',
-    gradient: 'from-purple-500 to-pink-500',
-    type: 'Volunteering',
-  },
-  {
-    icon: Briefcase,
-    title: 'Secretary',
-    organization: 'IEEE DIU SB WIE Affinity Group',
-    period: '2024 – 2025',
-    description: 'Coordinated operations and events for the Women in Engineering Affinity Group.',
-    gradient: 'from-green-500 to-emerald-500',
-    type: 'Volunteering',
-  },
-  {
-    icon: Award,
-    title: 'Campus Organizer',
-    organization: 'Brikkhobondhu',
-    period: '2024',
-    description: 'Organized campus engagement programs and community events.',
-    gradient: 'from-amber-500 to-orange-500',
-    type: 'Volunteering',
-  },
-]
+import type { WorkExperience } from '@/lib/types'
 
 const fadeIn = {
   initial: { opacity: 0, y: 16 },
@@ -50,7 +12,95 @@ const fadeIn = {
   transition: { duration: 0.3, ease: 'easeOut' },
 }
 
+// Icon map
+const iconMap: Record<string, any> = {
+  BookOpen,
+  Users,
+  Briefcase,
+  Award,
+}
+
+// Fallback work experience
+const fallbackWorkExperience: WorkExperience[] = [
+  {
+    icon: 'BookOpen',
+    title: 'Teaching Assistant',
+    organization: 'Daffodil International University',
+    period: 'October 2025 – Present',
+    description: 'Supporting undergraduate courses, labs, and evaluation under Prof. Dr. Fernaz Narin Nur. Mentoring students and assisting research activities.',
+    gradient: 'from-blue-500 to-cyan-500',
+    type: 'Work',
+    order: 0,
+  },
+  {
+    icon: 'Users',
+    title: 'IEEE Vice Chair (Technical)',
+    organization: 'IEEE DIU SB CS Chapter',
+    period: '2024 – 2025',
+    description: 'Led technical initiatives and events for the IEEE Student Branch Computer Science Chapter.',
+    gradient: 'from-purple-500 to-pink-500',
+    type: 'Volunteering',
+    order: 1,
+  },
+  {
+    icon: 'Briefcase',
+    title: 'Secretary',
+    organization: 'IEEE DIU SB WIE Affinity Group',
+    period: '2024 – 2025',
+    description: 'Coordinated operations and events for the Women in Engineering Affinity Group.',
+    gradient: 'from-green-500 to-emerald-500',
+    type: 'Volunteering',
+    order: 2,
+  },
+  {
+    icon: 'Award',
+    title: 'Campus Organizer',
+    organization: 'Brikkhobondhu',
+    period: '2024',
+    description: 'Organized campus engagement programs and community events.',
+    gradient: 'from-amber-500 to-orange-500',
+    type: 'Volunteering',
+    order: 3,
+  },
+]
+
 export default function WorkExperience() {
+  const [roles, setRoles] = useState<WorkExperience[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchWorkExperience()
+    
+    const handleUpdate = () => {
+      fetchWorkExperience()
+    }
+    window.addEventListener('content-updated', handleUpdate)
+    
+    return () => {
+      window.removeEventListener('content-updated', handleUpdate)
+    }
+  }, [])
+
+  const fetchWorkExperience = async () => {
+    try {
+      const res = await fetch('/api/work-experience')
+      const data = await res.json()
+      setRoles(data && data.length > 0 ? data : fallbackWorkExperience)
+    } catch (error) {
+      console.error('Error fetching work experience:', error)
+      setRoles(fallbackWorkExperience)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <section id="experience" className="section-container">
+        <div className="text-center py-12 text-gray-600">Loading...</div>
+      </section>
+    )
+  }
   return (
     <section id="experience" className="section-container bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -79,7 +129,10 @@ export default function WorkExperience() {
               <div className="relative rounded-2xl bg-white/75 backdrop-blur-xl border border-white/60 p-6 h-full">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${role.gradient} flex items-center justify-center text-white shadow-md`}>
-                    <role.icon className="w-6 h-6" />
+                    {(() => {
+                      const Icon = role.icon && iconMap[role.icon] ? iconMap[role.icon] : Briefcase
+                      return <Icon className="w-6 h-6" />
+                    })()}
                   </div>
                   <div className="flex-1 space-y-2">
                     <div className="flex items-start justify-between gap-2">

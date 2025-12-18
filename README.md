@@ -70,6 +70,7 @@ Built with modern web technologies, featuring smooth animations, responsive desi
 - ✅ **Social Links** - GitHub, LinkedIn integration
 - ✅ **Smooth Scrolling** - Seamless navigation between sections
 - ✅ **SEO Optimized** - Meta tags and semantic HTML
+- ✅ **Admin Panel** - Manage all content without changing code (Education, Publications, Projects, etc.)
 
 ---
 
@@ -90,6 +91,8 @@ Built with modern web technologies, featuring smooth animations, responsive desi
 ### Backend & APIs
 - **[Next.js API Routes](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)** - Serverless API endpoints
 - **[Resend](https://resend.com/)** - Email delivery service
+- **[Supabase](https://supabase.com/)** - PostgreSQL database for content management
+- **[bcryptjs](https://www.npmjs.com/package/bcryptjs)** - Password hashing for admin authentication
 
 ### Additional Libraries
 - **[Axios](https://axios-http.com/)** - HTTP client
@@ -134,16 +137,26 @@ Before you begin, ensure you have the following installed:
 
 ### Environment Variables
 
-Create a `.env.local` file in the root directory for email service configuration:
+Create a `.env.local` file in the root directory:
 
 ```env
 # Email Service (Resend)
 RESEND_API_KEY=your_resend_api_key_here
 FROM_EMAIL=noreply@yourdomain.com
 TO_EMAIL=sarbajit2001@gmail.com
+
+# Database (Supabase) - Required for Admin Panel
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# Admin Panel Password
+ADMIN_PASSWORD=your-secure-password-here
 ```
 
-> **Note**: The contact form will work in development mode without these variables (submissions are logged to console), but you'll need them for production email delivery.
+> **Note**: 
+> - The contact form will work in development mode without email variables (submissions are logged to console)
+> - For the admin panel, you need to set up Supabase. See `DATABASE_SETUP.md` for detailed instructions
+> - The portfolio will work without the database, but the admin panel requires it
 
 ---
 
@@ -205,6 +218,27 @@ The contact form includes:
 - **Breakpoints**: Mobile, Tablet, Desktop
 - **Touch-friendly** navigation and interactions
 - **Optimized images** with Next.js Image component
+
+---
+
+## 🎛️ Admin Panel
+
+The portfolio includes a powerful admin panel that lets you manage all content without changing code!
+
+### Features
+- ✅ Manage Education, Publications, Work Experience, Projects, Research Areas, and Courses
+- ✅ Add, edit, and delete entries through a beautiful UI
+- ✅ Real-time updates on your portfolio
+- ✅ Secure password-based authentication
+
+### Setup
+1. Follow the instructions in `DATABASE_SETUP.md` to set up Supabase
+2. Run the SQL schema from `supabase_schema.sql` in Supabase SQL Editor
+3. Set environment variables (see above)
+4. Access admin panel at `/admin`
+
+### Usage
+See `ADMIN_PANEL_GUIDE.md` for detailed usage instructions.
 
 ---
 

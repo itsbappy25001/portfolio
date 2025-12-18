@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Github, Linkedin, Send, Phone } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -17,14 +18,6 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>
 
-const contactInfo = [
-  { icon: Mail, text: 'bappy15-6155@s.diu.edu.bd', href: 'mailto:bappy15-6155@s.diu.edu.bd', gradient: 'from-blue-500 to-cyan-500' },
-  { icon: Mail, text: 'sarbajit2001@gmail.com', href: 'mailto:sarbajit2001@gmail.com', gradient: 'from-purple-500 to-pink-500' },
-  { icon: Phone, text: '+880 1315352270', href: 'tel:+8801315352270', gradient: 'from-green-500 to-emerald-500' },
-  { icon: Github, text: 'github.com/SarbajitPbappy', href: 'https://github.com/SarbajitPbappy', gradient: 'from-gray-700 to-gray-900', external: true },
-  { icon: Linkedin, text: 'linkedin.com/in/iamsarbajit', href: 'https://linkedin.com/in/iamsarbajit', gradient: 'from-blue-600 to-blue-800', external: true },
-]
-
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
   whileInView: { opacity: 1, y: 0 },
@@ -32,7 +25,40 @@ const fadeIn = {
   transition: { duration: 0.35, ease: 'easeOut' },
 }
 
+// Icon map for dynamic icon rendering
+const iconMap: Record<string, any> = {
+  Mail,
+  Phone,
+  Github,
+  Linkedin,
+}
+
+// Fallback contact info
+const fallbackContactInfo = [
+  { icon: 'Mail', text: 'bappy15-6155@s.diu.edu.bd', href: 'mailto:bappy15-6155@s.diu.edu.bd', gradient: 'from-blue-500 to-cyan-500', is_external: false },
+  { icon: 'Mail', text: 'sarbajit2001@gmail.com', href: 'mailto:sarbajit2001@gmail.com', gradient: 'from-purple-500 to-pink-500', is_external: false },
+  { icon: 'Phone', text: '+880 1315352270', href: 'tel:+8801315352270', gradient: 'from-green-500 to-emerald-500', is_external: false },
+  { icon: 'Github', text: 'github.com/SarbajitPbappy', href: 'https://github.com/SarbajitPbappy', gradient: 'from-gray-700 to-gray-900', is_external: true },
+  { icon: 'Linkedin', text: 'linkedin.com/in/iamsarbajit', href: 'https://linkedin.com/in/iamsarbajit', gradient: 'from-blue-600 to-blue-800', is_external: true },
+]
+
 export default function Contact() {
+  const [contactInfo, setContactInfo] = useState<Array<{ icon: string; text: string; href: string; gradient: string; is_external: boolean }>>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchContactInfo()
+    
+    const handleUpdate = () => {
+      fetchContactInfo()
+    }
+    window.addEventListener('content-updated', handleUpdate)
+    
+    return () => {
+      window.removeEventListener('content-updated', handleUpdate)
+    }
+  }, [])
+
   const {
     register,
     handleSubmit,
@@ -41,6 +67,27 @@ export default function Contact() {
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   })
+
+  const fetchContactInfo = async () => {
+    try {
+      const res = await fetch('/api/contact-info')
+      const data = await res.json()
+      setContactInfo(data && data.length > 0 ? data : fallbackContactInfo)
+    } catch (error) {
+      console.error('Error fetching contact info:', error)
+      setContactInfo(fallbackContactInfo)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <section id="contact" className="section-container">
+        <div className="text-center py-12 text-gray-600">Loading...</div>
+      </section>
+    )
+  }
 
   const onSubmit = async (data: ContactFormData) => {
     try {
@@ -120,37 +167,40 @@ export default function Contact() {
             <div className="card bg-white/80 backdrop-blur-sm border-primary-200/50">
               <h3 className="text-2xl font-bold mb-6 text-gray-900">Contact Information</h3>
               <div className="space-y-4">
-                {contactInfo.map((info, index) => (
-                  <motion.div
-                    key={index}
-                    whileHover={{ x: 4, scale: 1.01 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {info.external ? (
-                      <Link
-                        href={info.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
-                      >
-                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
-                          <info.icon className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">{info.text}</span>
-                      </Link>
-                    ) : (
-                      <motion.a
-                        href={info.href}
-                        className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
-                      >
-                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
-                          <info.icon className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">{info.text}</span>
-                      </motion.a>
-                    )}
-                  </motion.div>
-                ))}
+                {contactInfo.map((info, index) => {
+                  const Icon = info.icon && iconMap[info.icon] ? iconMap[info.icon] : Mail
+                  return (
+                    <motion.div
+                      key={index}
+                      whileHover={{ x: 4, scale: 1.01 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {info.is_external ? (
+                        <Link
+                          href={info.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
+                        >
+                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                            <Icon className="w-5 h-5 text-white" />
+                          </div>
+                          <span className="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">{info.text}</span>
+                        </Link>
+                      ) : (
+                        <motion.a
+                          href={info.href}
+                          className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
+                        >
+                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                            <Icon className="w-5 h-5 text-white" />
+                          </div>
+                          <span className="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">{info.text}</span>
+                        </motion.a>
+                      )}
+                    </motion.div>
+                  )
+                })}
               </div>
             </div>
           </motion.div>

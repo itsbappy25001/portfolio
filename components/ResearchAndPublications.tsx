@@ -1,58 +1,9 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Brain, Microscope, Leaf, Eye, Sparkles, Layers, FileText, ExternalLink, CheckCircle, Clock } from 'lucide-react'
-
-const researchAreas = [
-  {
-    icon: Brain,
-    title: 'Deep Learning',
-    description:
-      'Designing architectures for complex pattern recognition, focusing on hybrid models that blend multiple neural approaches.',
-    technologies: ['CNN', 'Transfer Learning', 'Hybrid Models'],
-    gradient: 'from-purple-500 to-indigo-500',
-  },
-  {
-    icon: Eye,
-    title: 'Computer Vision',
-    description:
-      'Image processing and visual pattern recognition for medical imaging, agricultural monitoring, and automated analysis.',
-    technologies: ['Image Processing', 'OpenCV', 'Feature Extraction'],
-    gradient: 'from-blue-500 to-cyan-500',
-  },
-  {
-    icon: Microscope,
-    title: 'Medical Image Analysis',
-    description:
-      'AI-driven disease detection, diagnosis support, and treatment planning across varied imaging modalities.',
-    technologies: ['Diagnostic AI', 'Healthcare ML', 'Disease Detection'],
-    gradient: 'from-red-500 to-rose-500',
-  },
-  {
-    icon: Leaf,
-    title: 'Agricultural Image Analysis',
-    description:
-      'Computer vision for crop disease detection, plant health monitoring, and sustainable farming insights.',
-    technologies: ['Agricultural AI', 'Crop Monitoring', 'Disease Classification'],
-    gradient: 'from-green-500 to-emerald-500',
-  },
-  {
-    icon: Sparkles,
-    title: 'Explainable AI',
-    description:
-      'Interpretability methods and visual explanations that make model decisions transparent and trustworthy.',
-    technologies: ['XAI', 'Model Interpretability', 'Visualization'],
-    gradient: 'from-amber-500 to-orange-500',
-  },
-  {
-    icon: Layers,
-    title: 'Hybrid Deep Learning',
-    description:
-      'Combining multiple deep learning approaches for stronger classification and detection performance.',
-    technologies: ['Ensemble Learning', 'Architecture Design', 'Multi-Modal'],
-    gradient: 'from-pink-500 to-rose-500',
-  },
-]
+import type { ResearchArea, Publication } from '@/lib/types'
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -61,10 +12,72 @@ const fadeIn = {
   transition: { duration: 0.3, ease: 'easeOut' },
 }
 
-const publications = [
+// Icon map
+const iconMap: Record<string, any> = {
+  Brain,
+  Eye,
+  Microscope,
+  Leaf,
+  Sparkles,
+  Layers,
+}
+
+// Fallback research areas
+const fallbackResearchAreas: ResearchArea[] = [
   {
-    title:
-      'SkinVisualNet: A Hybrid Deep Learning Approach Leveraging Explainable Models for Identifying Lyme Disease from Skin Rash Images',
+    icon: 'Brain',
+    title: 'Deep Learning',
+    description: 'Designing architectures for complex pattern recognition, focusing on hybrid models that blend multiple neural approaches.',
+    technologies: ['CNN', 'Transfer Learning', 'Hybrid Models'],
+    gradient: 'from-purple-500 to-indigo-500',
+    order: 0,
+  },
+  {
+    icon: 'Eye',
+    title: 'Computer Vision',
+    description: 'Image processing and visual pattern recognition for medical imaging, agricultural monitoring, and automated analysis.',
+    technologies: ['Image Processing', 'OpenCV', 'Feature Extraction'],
+    gradient: 'from-blue-500 to-cyan-500',
+    order: 1,
+  },
+  {
+    icon: 'Microscope',
+    title: 'Medical Image Analysis',
+    description: 'AI-driven disease detection, diagnosis support, and treatment planning across varied imaging modalities.',
+    technologies: ['Diagnostic AI', 'Healthcare ML', 'Disease Detection'],
+    gradient: 'from-red-500 to-rose-500',
+    order: 2,
+  },
+  {
+    icon: 'Leaf',
+    title: 'Agricultural Image Analysis',
+    description: 'Computer vision for crop disease detection, plant health monitoring, and sustainable farming insights.',
+    technologies: ['Agricultural AI', 'Crop Monitoring', 'Disease Classification'],
+    gradient: 'from-green-500 to-emerald-500',
+    order: 3,
+  },
+  {
+    icon: 'Sparkles',
+    title: 'Explainable AI',
+    description: 'Interpretability methods and visual explanations that make model decisions transparent and trustworthy.',
+    technologies: ['XAI', 'Model Interpretability', 'Visualization'],
+    gradient: 'from-amber-500 to-orange-500',
+    order: 4,
+  },
+  {
+    icon: 'Layers',
+    title: 'Hybrid Deep Learning',
+    description: 'Combining multiple deep learning approaches for stronger classification and detection performance.',
+    technologies: ['Ensemble Learning', 'Architecture Design', 'Multi-Modal'],
+    gradient: 'from-pink-500 to-rose-500',
+    order: 5,
+  },
+]
+
+// Fallback publications
+const fallbackPublications: Publication[] = [
+  {
+    title: 'SkinVisualNet: A Hybrid Deep Learning Approach Leveraging Explainable Models for Identifying Lyme Disease from Skin Rash Images',
     authors: 'Sohel, A., Turjy, R. C. D., Bappy, S. P., Assaduzzaman, M., Marouf, A. A., Rokne, J. G., & Alhajj, R.',
     status: 'Published',
     journal: 'Machine Learning and Knowledge Extraction',
@@ -73,10 +86,10 @@ const publications = [
     type: 'Journal Article (Q1)',
     link: 'https://doi.org/10.3390/make7040157',
     gradient: 'from-green-500 to-emerald-500',
+    order: 0,
   },
   {
-    title:
-      'JackVisualNet: A Fine-Tuned Hybrid Deep Learning Model for Jackfruit Disease Classification with Explainable AI',
+    title: 'JackVisualNet: A Fine-Tuned Hybrid Deep Learning Model for Jackfruit Disease Classification with Explainable AI',
     authors: 'Bappy, S. P. et al.',
     status: 'Major Revision',
     journal: 'PeerJ Computer Science (Q1)',
@@ -84,6 +97,7 @@ const publications = [
     type: 'Journal Article',
     link: '#',
     gradient: 'from-yellow-500 to-amber-500',
+    order: 1,
   },
   {
     title: 'A Hybrid Deep Learning Approach for Identifying Jackfruit Leaf and Fruit Disease',
@@ -95,6 +109,7 @@ const publications = [
     volume: 'Vol. 3',
     link: 'https://symposium24.ieeecsbdc.org/papers/20-a-hybrid-deep-learning-approach-for-identifying-jackfruit-leaf-and-fruit-disease',
     gradient: 'from-blue-500 to-cyan-500',
+    order: 2,
   },
   {
     title: 'A Hybrid Deep Learning Approach for Identifying Lyme Disease from Skin Rash Images',
@@ -106,10 +121,54 @@ const publications = [
     volume: 'Vol. 3',
     link: 'https://symposium24.ieeecsbdc.org/papers/20-a-hybrid-deep-learning-approach-for-identifying-jackfruit-leaf-and-fruit-disease',
     gradient: 'from-purple-500 to-pink-500',
+    order: 3,
   },
 ]
 
 export default function ResearchAndPublications() {
+  const [researchAreas, setResearchAreas] = useState<ResearchArea[]>([])
+  const [publications, setPublications] = useState<Publication[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchData()
+    
+    const handleUpdate = () => {
+      fetchData()
+    }
+    window.addEventListener('content-updated', handleUpdate)
+    
+    return () => {
+      window.removeEventListener('content-updated', handleUpdate)
+    }
+  }, [])
+
+  const fetchData = async () => {
+    try {
+      const [areasRes, pubsRes] = await Promise.all([
+        fetch('/api/research-areas'),
+        fetch('/api/publications'),
+      ])
+      const areasData = await areasRes.json()
+      const pubsData = await pubsRes.json()
+      setResearchAreas(areasData && areasData.length > 0 ? areasData : fallbackResearchAreas)
+      setPublications(pubsData && pubsData.length > 0 ? pubsData : fallbackPublications)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      setResearchAreas(fallbackResearchAreas)
+      setPublications(fallbackPublications)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <section id="research" className="section-container">
+        <div className="text-center py-12 text-gray-600">Loading...</div>
+      </section>
+    )
+  }
   return (
     <section id="research" className="section-container bg-gradient-to-b from-gray-50 via-white to-gray-50 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -136,7 +195,10 @@ export default function ResearchAndPublications() {
               className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
             >
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${area.gradient} flex items-center justify-center text-white mb-4`}>
-                <area.icon className="w-6 h-6" />
+                {(() => {
+                  const Icon = area.icon && iconMap[area.icon] ? iconMap[area.icon] : Brain
+                  return <Icon className="w-6 h-6" />
+                })()}
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">{area.title}</h3>
               <p className="text-sm text-gray-700 leading-relaxed mb-3">{area.description}</p>

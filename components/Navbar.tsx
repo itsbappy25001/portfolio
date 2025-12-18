@@ -4,21 +4,54 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
+import type { Navbar } from '@/lib/types'
 
-const navItems = [
-  { name: 'Home', href: '#home' },
-  { name: 'About', href: '#about' },
-  { name: 'Education', href: '#education' },
-  { name: 'Work Experience', href: '#experience' },
-  { name: 'Research', href: '#research' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Contact', href: '#contact' },
-]
+// Fallback navbar
+const fallbackNavbar: Navbar = {
+  name: 'Sarbajit Paul Bappy',
+  nav_items: [
+    { name: 'Home', href: '#home' },
+    { name: 'About', href: '#about' },
+    { name: 'Education', href: '#education' },
+    { name: 'Work Experience', href: '#experience' },
+    { name: 'Research', href: '#research' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Contact', href: '#contact' },
+  ],
+}
 
 export default function Navbar() {
+  const [navbar, setNavbar] = useState<Navbar | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+
+  useEffect(() => {
+    fetchNavbar()
+    
+    const handleUpdate = () => {
+      fetchNavbar()
+    }
+    window.addEventListener('content-updated', handleUpdate)
+    
+    return () => {
+      window.removeEventListener('content-updated', handleUpdate)
+    }
+  }, [])
+
+  const fetchNavbar = async () => {
+    try {
+      const res = await fetch('/api/navbar')
+      const data = await res.json()
+      setNavbar(data || fallbackNavbar)
+    } catch (error) {
+      console.error('Error fetching navbar:', error)
+      setNavbar(fallbackNavbar)
+    }
+  }
+
+  const navbarData = navbar || fallbackNavbar
+  const navItems = navbarData.nav_items || []
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,7 +111,7 @@ export default function Navbar() {
             onClick={(e) => handleLinkClick(e, '#home')}
             className="flex items-center h-full text-2xl font-bold gradient-text leading-none"
           >
-            Sarbajit Paul Bappy
+            {navbarData.name}
           </Link>
 
           {/* Desktop Menu */}
